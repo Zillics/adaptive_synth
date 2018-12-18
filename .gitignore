@@ -1,0 +1,3 @@
+src/build/*
+*.o
+src/ada_synth
