@@ -7,8 +7,7 @@ int main()
 	ms->addOscillator(SINE);
 	ms->addOscillator(SAW);
 	ms->addOscillator(SQUARE);
-	ms->addOscillator(SINE);
-	ms->addOscillator(SQUARE);
-	ms->print();
+	Player* player = new Player();
+	player->play(ms);
 	return 0;
 }

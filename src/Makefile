@@ -58,6 +58,6 @@ distclean: clean
 strip : 
 	strip $(PROGRAMS)
 
-ada_synth: main.cpp MultiSynth.cpp Oscillator.cpp Stk.o SineWave.o BlitSquare.o BlitSaw.o
-	$(CC) $(LDFLAGS) $(CFLAGS) $(DEFS) -o ada_synth main.cpp MultiSynth.cpp Oscillator.cpp $(OBJECT_PATH)/SineWave.o $(OBJECT_PATH)/Stk.o $(OBJECT_PATH)/BlitSaw.o $(OBJECT_PATH)/BlitSquare.o
+ada_synth: main.cpp MultiSynth.cpp Oscillator.cpp RtAudio.o Stk.o SineWave.o BlitSquare.o BlitSaw.o 
+	$(CC) $(LDFLAGS) $(CFLAGS) $(DEFS) -o ada_synth main.cpp MultiSynth.cpp Oscillator.cpp $(OBJECT_PATH)/SineWave.o $(OBJECT_PATH)/Stk.o $(OBJECT_PATH)/BlitSaw.o $(OBJECT_PATH)/BlitSquare.o $(OBJECT_PATH)/RtAudio.o $(LIBRARY)
 
