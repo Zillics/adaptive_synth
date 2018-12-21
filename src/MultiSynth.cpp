@@ -12,6 +12,10 @@ MultiSynth::MultiSynth(std::string filename)
 	std::string line;
 	std::string word;
 	istr_row.open(filename,std::ifstream::in);
+	if(istr_row.fail())
+	{
+		throw std::invalid_argument("MultiSynth: File does not exist!");
+	}
 	stk::StkFloat frequency;
 	stk::StkFloat amplitude;
 	while(std::getline(istr_row,line))
