@@ -2,7 +2,29 @@
 
 MultiSynth::MultiSynth( void )
 {
+	t = 0;
+}
 
+MultiSynth::MultiSynth(std::string filename)
+{
+	t = 0;
+	std::ifstream istr_row;
+	std::string line;
+	std::string word;
+	istr_row.open(filename,std::ifstream::in);
+	stk::StkFloat frequency;
+	stk::StkFloat amplitude;
+	while(std::getline(istr_row,line))
+	{
+		std::stringstream istr_col(line);
+		if(!std::getline(istr_col,word,',')){throw std::invalid_argument("Wrong file format!");}
+		frequency = std::stof(word);
+		if(!std::getline(istr_col,word,',')){throw std::invalid_argument("Wrong file format!");}
+		amplitude = std::stof(word);
+		if(std::getline(istr_col,word,',')) {throw std::invalid_argument("Wrong file format!");}
+		// Add oscillator
+		addOscillator(SINE,frequency,amplitude);
+	}
 }
 
 MultiSynth::~MultiSynth()
@@ -14,25 +36,49 @@ MultiSynth::~MultiSynth()
 	oscillators.clear();
 }
 
-void MultiSynth::addOscillator(oscType type)
+void MultiSynth::addOscillator(oscType type, stk::StkFloat freq)
 {
 	Oscillator* osc;
 	switch(type)
 	{
 		case SINE :
-			osc = new SineOsc();
+			osc = new SineOsc(freq);
 			break;
 		case SAW :
-			osc = new SawOsc();
+			osc = new SawOsc(freq);
 			break;
 		case SQUARE :
-			osc = new SquareOsc();
+			osc = new SquareOsc(freq);
 			break;
 		default:
 			throw std::invalid_argument("MultiSynth::addOscillator : no oscillator of that type!");
 	}
 	oscillators.push_back(osc);
 }
+//TEMPORARY FUNCTION. WILL BE REMOVED
+void MultiSynth::addOscillator(oscType type,stk::StkFloat freq, stk::StkFloat amp)
+{
+	Oscillator* osc;
+	switch(type)
+	{
+		case SINE :
+			osc = new SineOsc(freq);
+			osc->setAmplitude(amp);
+			break;
+		case SAW :
+			osc = new SawOsc(freq);
+			osc->setAmplitude(amp);			
+			break;
+		case SQUARE :
+			osc = new SquareOsc(freq);
+			osc->setAmplitude(amp);
+			break;
+		default:
+			throw std::invalid_argument("MultiSynth::addOscillator : no oscillator of that type!");
+	}
+	oscillators.push_back(osc);
+}
+
 
 void MultiSynth::print() const
 {
@@ -48,10 +94,11 @@ stk::StkFloat MultiSynth::tick()
 	for(auto osc : oscillators)
 	{
 		result += osc->tick();
-		//std::cout << result << std::endl;
 	}
 	return result;
 }
+
+
 Player::Player( void )
 {
 	stk::Stk::setSampleRate( 44100.0 );
@@ -63,11 +110,11 @@ int tick( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames, dou
 {
 	MultiSynth* synth = (MultiSynth*) dataPointer;
 	//stk::SineWave* sine = (stk::SineWave*) dataPointer;
-	register stk::StkFloat temp, sample, *samples = (stk::StkFloat *) outputBuffer;
+	register stk::StkFloat sample, *samples = (stk::StkFloat *) outputBuffer;
 	for(unsigned int i = 0; i < nBufferFrames; i++)
 	{
 		sample = synth->tick();
-		std::cout << sample << std::endl;
+		// Apply value to both stereo channels
 		for ( int k=0; k<2; k++ ) *samples++ = sample;
 	}
 	return 0;

@@ -1,3 +1,5 @@
 src/build/*
 *.o
 src/ada_synth
+src/synth_files/*
+src/sound_files/*
