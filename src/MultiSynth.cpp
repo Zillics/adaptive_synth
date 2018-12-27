@@ -105,7 +105,8 @@ stk::StkFloat MultiSynth::tick()
 
 Player::Player( void )
 {
-	stk::Stk::setSampleRate( 44100.0 );
+	std::cout << "Initializing player of sampling rate " << SAMPLE_RATE << std::endl;
+	stk::Stk::setSampleRate( SAMPLE_RATE );
 	stk::Stk::showWarnings( true );
 }
 //! The tick() function handles sample computation and scheduling of control updates.
@@ -154,3 +155,15 @@ void Player::play(MultiSynth* synth)
   if ( dac.isStreamOpen() ) dac.closeStream();
 }
 	
+//! Record MultiSynth object for _ seconds to wav file
+void Player::record(MultiSynth* synth, unsigned int seconds, std::string filepath)
+{
+	stk::FileWvOut output;
+	// Open a 16-bit, two-channel WAV formatted output file
+	output.openFile(filepath, 1, stk::FileWrite::FILE_WAV, stk::Stk::STK_SINT16 );
+	unsigned int n_samples = seconds*SAMPLE_RATE; //TODO: fetch sample rate from internal variable of object instead
+	// Run the oscillator for n_sampes samples, writing to the output file
+	for ( int i=0; i<n_samples; i++ )
+    	output.tick( synth->tick() );
+
+}

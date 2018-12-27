@@ -8,9 +8,11 @@
 #include <BlitSaw.h>
 #include <BlitSquare.h>
 #include <RtAudio.h>
+#include <FileWrite.h>
+#include <FileWvOut.h>
 #include "Oscillator.hpp"
 
-
+#define SAMPLE_RATE 44100.0
 
 class MultiSynth
 {
@@ -45,6 +47,8 @@ public:
 	~Player( void );
 	//! Play MultiSynth object
 	void play(MultiSynth* synth);
+	//! Record MultiSynth object for _ seconds to wav file
+	void record(MultiSynth* synth, unsigned int seconds, std::string filepath);
 private:
 	RtAudio dac;
 };
