@@ -5,7 +5,6 @@
 #include <SineWave.h>
 #include <BlitSaw.h>
 #include <BlitSquare.h>
-#define TICK_INTERVAL 0.001
 
 enum oscType
 {
@@ -31,6 +30,8 @@ public:
 	virtual void setFrequency(stk::StkFloat freq) = 0;
 	//! Gets frequency of oscillator
 	stk::StkFloat getFrequency() const { return frequency; }
+	//! Sets tick_interval
+	void set_tickInterval(stk::StkFloat tI) { tickInterval = tI; }
 	// TODO:
 	// 1. Extra effects?
 	void setAmplitude(stk::StkFloat amp) { amplitude = amp; } //TEMPORARY FUNCTION. WILL BE REMOVED
@@ -39,6 +40,7 @@ protected:
 	stk::StkFloat frequency;
 	stk::StkFloat amplitude; //TEMPORARY VARIABLE. WILL BE REMOVED
 	stk::StkFloat t;
+	stk::StkFloat tickInterval = 1/44100;
 };
 
 class SineOsc : public Oscillator

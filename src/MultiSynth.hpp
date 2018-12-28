@@ -10,9 +10,12 @@
 #include <RtAudio.h>
 #include <FileWrite.h>
 #include <FileWvOut.h>
-#include "Oscillator.hpp"
 
 #define SAMPLE_RATE 44100.0
+
+#include "Oscillator.hpp"
+
+
 
 class MultiSynth
 {
@@ -32,10 +35,19 @@ public:
 	void print() const;
 	//! Ticks all oscillators and sums results to one value
 	stk::StkFloat tick();
-
+	//! Sets sample rate
+	void set_sampleRate(stk::StkFloat sr) { sampleRate = sr; }
+	//! Sets amp to value so no distortion will occur (lower bound)
+	void updateAmp() { amp = maxAmp/n_osc; std::cout << "Synth amp set to " << amp << std::endl; }
+	//! Sets amp to custom value (distortion might happen)
+	void setAmp(stk::StkFloat _amp) { amp = _amp; }
 private:
 	std::vector<Oscillator*> oscillators;
+	unsigned int n_osc = 0;
+	stk::StkFloat maxAmp = 0;
+	stk::StkFloat amp; //The amplitude (0-1) that is applied to the resulting wave in tick
 	unsigned int t;
+	stk::StkFloat sampleRate = SAMPLE_RATE;
 };
 // Player for testing out different MultiSynth objects
 class Player

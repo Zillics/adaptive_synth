@@ -11,13 +11,13 @@ SineOsc::SineOsc(stk::StkFloat freq)
 
 stk::StkFloat SineOsc::getAmplitude() const
 {
-	return amplitude;//0.01*t;
+	return amplitude;
 }
 
 stk::StkFloat SineOsc::tick() 
 {
 	stk::StkFloat ret = getAmplitude()*oscillator.tick();
-	t += TICK_INTERVAL;
+	t += tickInterval;
 	return ret;
 }
 
@@ -39,7 +39,7 @@ stk::StkFloat SawOsc::getAmplitude() const
 stk::StkFloat SawOsc::tick() 
 {
 	stk::StkFloat ret = getAmplitude()*oscillator.tick();
-	t += TICK_INTERVAL;
+	t += tickInterval;
 	return ret;
 }
 
@@ -61,7 +61,7 @@ stk::StkFloat SquareOsc::getAmplitude() const
 stk::StkFloat SquareOsc::tick() 
 {
 	stk::StkFloat ret = getAmplitude()*oscillator.tick();
-	t += TICK_INTERVAL;
+	t += tickInterval;
 	return ret;
 }
 

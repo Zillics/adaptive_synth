@@ -57,7 +57,9 @@ void MultiSynth::addOscillator(oscType type, stk::StkFloat freq)
 		default:
 			throw std::invalid_argument("MultiSynth::addOscillator : no oscillator of that type!");
 	}
+	osc->set_tickInterval(1/sampleRate);
 	oscillators.push_back(osc);
+	n_osc += 1;
 }
 //TEMPORARY FUNCTION. WILL BE REMOVED
 void MultiSynth::addOscillator(oscType type,stk::StkFloat freq, stk::StkFloat amp)
@@ -80,12 +82,18 @@ void MultiSynth::addOscillator(oscType type,stk::StkFloat freq, stk::StkFloat am
 		default:
 			throw std::invalid_argument("MultiSynth::addOscillator : no oscillator of that type!");
 	}
+	osc->set_tickInterval(1/sampleRate);
 	oscillators.push_back(osc);
+	if(amp > maxAmp) { maxAmp = amp; }
+	n_osc += 1;
 }
 
 
 void MultiSynth::print() const
 {
+	std::cout << "*****MultiSynth**object*****" << std::endl;
+	std::cout << "Sample rate: " << sampleRate << "Hz" << std::endl;
+	std::cout << "Number of oscillators: " << n_osc << std::endl;
 	for(auto osc : oscillators)
 	{
 		osc->print();
@@ -99,6 +107,8 @@ stk::StkFloat MultiSynth::tick()
 	{
 		result += osc->tick();
 	}
+	result = amp*result;
+	if(result > 1.0 || result < -1.0) { std::cout << "Upper/Lower bound reached! " << result << std::endl; }
 	return result;
 }
 
@@ -127,6 +137,7 @@ int tick( void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames, dou
 
 void Player::play(MultiSynth* synth)
 {
+	synth->updateAmp();
     RtAudioFormat format = ( sizeof(stk::StkFloat) == 8 ) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
     RtAudio::StreamParameters parameters;
     parameters.deviceId = 6;
@@ -163,7 +174,7 @@ void Player::record(MultiSynth* synth, unsigned int seconds, std::string filepat
 	output.openFile(filepath, 1, stk::FileWrite::FILE_WAV, stk::Stk::STK_SINT16 );
 	unsigned int n_samples = seconds*SAMPLE_RATE; //TODO: fetch sample rate from internal variable of object instead
 	// Run the oscillator for n_sampes samples, writing to the output file
-	for ( int i=0; i<n_samples; i++ )
+	for ( unsigned int i=0; i<n_samples; i++ )
     	output.tick( synth->tick() );
 
 }
