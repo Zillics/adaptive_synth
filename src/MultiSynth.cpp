@@ -7,6 +7,17 @@ MultiSynth::MultiSynth( void )
 
 MultiSynth::MultiSynth(std::string filename)
 {
+	read_file(filename,SINE);
+}
+
+MultiSynth::MultiSynth(std::string sine_file,std::string noise_file)
+{
+	read_file(sine_file,SINE);
+	read_file(noise_file,NOISE);
+}
+
+void MultiSynth::read_file(std::string filename,oscType osc_type)
+{
 	t = 0;
 	std::ifstream istr_row;
 	std::string line;
@@ -14,7 +25,7 @@ MultiSynth::MultiSynth(std::string filename)
 	istr_row.open(filename,std::ifstream::in);
 	if(istr_row.fail())
 	{
-		throw std::invalid_argument("MultiSynth: File does not exist!");
+		throw std::invalid_argument("MultiSynth: File " + filename + "does not exist!");
 	}
 	stk::StkFloat frequency;
 	stk::StkFloat amplitude;
@@ -27,8 +38,8 @@ MultiSynth::MultiSynth(std::string filename)
 		amplitude = std::stof(word);
 		if(std::getline(istr_col,word,',')) {throw std::invalid_argument("Wrong file format!");}
 		// Add oscillator
-		addOscillator(SINE,frequency,amplitude);
-	}
+		addOscillator(osc_type,frequency,amplitude);
+	}	
 }
 
 MultiSynth::~MultiSynth()
@@ -78,6 +89,9 @@ void MultiSynth::addOscillator(oscType type,stk::StkFloat freq, stk::StkFloat am
 		case SQUARE :
 			osc = new SquareOsc(freq);
 			osc->setAmplitude(amp);
+			break;
+		case NOISE : 
+			osc = new Noise(freq,amp);
 			break;
 		default:
 			throw std::invalid_argument("MultiSynth::addOscillator : no oscillator of that type!");

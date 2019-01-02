@@ -7,6 +7,7 @@
 #include <SineWave.h>
 #include <BlitSaw.h>
 #include <BlitSquare.h>
+#include <Noise.h>
 #include <RtAudio.h>
 #include <FileWrite.h>
 #include <FileWvOut.h>
@@ -25,8 +26,11 @@ public:
 	//! Reads from csv file in the format: "frequency_i, amplitude_i \n"
 	//! Creates n sine waves of imported frequency and amplitude
 	MultiSynth(std::string filename);
+	MultiSynth(std::string sinename,std::string noisename);
 	//! Default destructor
 	~MultiSynth( void );
+	//! Adds oscillators based on a csv file
+	void read_file(std::string filename,oscType osc_type);
 	//! Adds oscillator of frequency freq to oscillators
 	void addOscillator(oscType type,stk::StkFloat freq);
 	//! Adds oscillator of frequency freq to oscillators

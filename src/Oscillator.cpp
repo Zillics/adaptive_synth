@@ -65,6 +65,21 @@ stk::StkFloat SquareOsc::tick()
 	return ret;
 }
 
+Noise::Noise(stk::StkFloat mean_,stk::StkFloat std_)
+{
+	std = std_;
+	mean = mean_;
+	distribution = *(new std::normal_distribution<double>((double)mean,(double)std));
+}
+
+stk::StkFloat Noise::tick()
+{
+	stk::StkFloat ret = distribution(generator);
+	t += tickInterval;
+	return ret;
+}
+
+
 
 Oscillator::~Oscillator() {}
 
@@ -81,4 +96,8 @@ SawOsc::~SawOsc()
 SquareOsc::~SquareOsc()
 {
 	delete &oscillator;
+}
+Noise::~Noise()
+{
+
 }

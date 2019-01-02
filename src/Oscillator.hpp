@@ -5,12 +5,15 @@
 #include <SineWave.h>
 #include <BlitSaw.h>
 #include <BlitSquare.h>
+#include <Noise.h>
+#include <random>
 
 enum oscType
 {
 	SINE,
 	SAW,
-	SQUARE
+	SQUARE,
+	NOISE
 };
 
 class Oscillator
@@ -97,5 +100,19 @@ private:
 	stk::BlitSquare oscillator;
 };
 
+class Noise : public Oscillator
+{
+public:
+	Noise(stk::StkFloat mean_,stk::StkFloat std__);
+	~Noise();
+	void print() const { std::cout << "-------Noise-------std: " << std << "mean: " << "\n"; }
+	stk::StkFloat tick();
+	void setFrequency(stk::StkFloat freq) {}
+private:
+	std::default_random_engine generator;
+	std::normal_distribution<double> distribution;
+	stk::StkFloat std;
+	stk::StkFloat mean;
+};
 
 #endif
